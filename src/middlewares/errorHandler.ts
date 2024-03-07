@@ -3,11 +3,11 @@
 
 import { ErrorRequestHandler } from 'express'
 import AppError from '../errors/AppError'
+import { ZodError } from 'zod'
+import handleZodError from '../errors/zodErrorHandler'
+import { TErrorSources } from '../interface/errors.type'
 
-export type TErrorSources = {
-  path: string | number
-  message: string
-}[]
+
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let statusCode = 500
@@ -36,6 +36,11 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
         message: err?.message,
       },
     ]
+  } else if (err instanceof ZodError) {
+    const simplifiedError = handleZodError(err)
+    statusCode = simplifiedError?.statusCode
+    message = simplifiedError?.message
+    errorSources = simplifiedError?.errorSources
   }
 
   //ultimate return
