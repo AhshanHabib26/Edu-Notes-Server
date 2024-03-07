@@ -1,11 +1,22 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express'
+const app = express()
+import cors from 'cors'
+import authHandler from './user/user.router'
+import errorHandler from './middlewares/errorHandler'
 
-const app = express();
+app.use(express.json())
+app.use(cors())
 
-const a = 10
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome, EduNotes Server!!')
+})
 
-app.get("/", (req : Request, res: Response) => {
-  res.send("Welcome, EduNotes Server!!");
-});
 
-export default app;
+app.use("/api/auth", authHandler)
+
+
+
+// Global Error Handler
+app.use(errorHandler)
+
+export default app
