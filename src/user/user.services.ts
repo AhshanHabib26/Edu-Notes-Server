@@ -3,6 +3,7 @@ import AppError from '../errors/AppError'
 import { TUserType } from './user.interface'
 import { User } from './user.model'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 type TUserLoginType = {
   email: string
@@ -47,10 +48,22 @@ export const loginUserService = async (payload: TUserLoginType) => {
   )
 
   if (!isPasswordMarched) {
-    throw new AppError(httpStatus.UNAUTHORIZED, 'Password is Invalid')
+    throw new AppError(httpStatus.FORBIDDEN, 'Password is Invalid')
   }
 
-  
+  const userPayload = {
+    name: user?.name,
+    email: user?.email,
+    role: user?.role,
+  }
 
-  return {}
+  const accessToken = jwt.sign(
+    userPayload,
+    process.env.JWT_ACCESS_SECRET as string,
+    { expiresIn: process.env.JWT_EXPIRES_IN },
+  )
+
+  return {
+    accessToken,
+  }
 }

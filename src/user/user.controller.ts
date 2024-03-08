@@ -24,11 +24,11 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: 'User Login Successfully',
-    data: null,
+    data: result,
   })
 })
 
 export const userControler = {
   createUser,
-  loginUser
+  loginUser,
 }
