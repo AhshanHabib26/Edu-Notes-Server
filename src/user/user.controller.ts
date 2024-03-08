@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+
 import { Request, Response } from 'express'
-import { createUserService } from './user.services'
+import { createUserService, loginUserService } from './user.services'
 import catchAsync from '../utils/catchAsync'
 import { userValidation } from './user.validation'
 
@@ -11,10 +14,21 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: 'User Created Successfully',
-    data: result,
+    data: null,
+  })
+})
+
+const loginUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await loginUserService(req.body)
+
+  res.status(200).json({
+    success: true,
+    message: 'User Login Successfully',
+    data: null,
   })
 })
 
 export const userControler = {
   createUser,
+  loginUser
 }

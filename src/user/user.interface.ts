@@ -7,3 +7,6 @@ export type TUserType = {
     status?: 'active' | 'blocked'
     isDeleted?: boolean
   }
+
+
+  

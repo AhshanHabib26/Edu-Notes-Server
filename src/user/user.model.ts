@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+
 import { Schema, model } from 'mongoose'
 import { TUserType } from './user.interface'
+import bcrypt from 'bcrypt'
 
 const userSchema = new Schema<TUserType>(
   {
@@ -14,7 +18,7 @@ const userSchema = new Schema<TUserType>(
     password: {
       type: String,
       required: true,
-      select: 0,
+      select: 0, // Password removed from response
     },
     isDeleted: {
       type: Boolean,
@@ -36,5 +40,13 @@ const userSchema = new Schema<TUserType>(
   },
   { timestamps: true },
 )
+
+// Hashed password before save DB
+userSchema.pre('save', async function (next) {
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(process.env.SALT_ROUND),
+  )
+})
 
 export const User = model<TUserType>('User', userSchema)
